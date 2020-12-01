@@ -1,2 +1,4 @@
 Django>=2.2.16,<2.3
 requests>=2.23,<2.24
+pandas
+xlrd
