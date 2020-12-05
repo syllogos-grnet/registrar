@@ -1,4 +1,6 @@
 import json
+from collections import Generator
+from logging import getLogger
 
 import pandas
 from dateutil.parser import isoparse
@@ -6,6 +8,8 @@ from django.utils.timezone import datetime
 from pytz import utc
 
 from syndromes.models import BIG_BANG, Registar
+
+logger = getLogger(__name__)
 
 
 def xlsx_to_records(input_file_path: str, filter_func=None) -> list:
@@ -46,26 +50,28 @@ def get_date(date_record):
     return utc.localize(BIG_BANG)
 
 
-def reload_registar(xlsx_file_path: str) -> bool:
-    Registar.objects.all().delete()
+def load_registar(xlsx_file_path: str) -> Generator:
     for record in xlsx_to_records(xlsx_file_path, only_active):
-        registar_id = int(record['Α/Α'])
-        subscription_date = get_date(record['Εγγραφή'])
-        name = ' '.join([record.get('Όνομα', '-'), record.get('Επίθετο', '-')])
-        email = record['PR']
-        dept = calculate_dept(record, subscription_date)
-        Registar(
-            register_id=registar_id,
-            subscription_date=subscription_date,
-            name=name,
-            email=email,
-            dept=dept
-        )
+        try:
+            registar_id = int(record['Α/Α'])
+            subscription_date = get_date(record['Εγγραφή'])
+            name = ' '.join(
+                [record.get('Όνομα', '-'), record.get('Επίθετο', '-')])
+            email = record['PR']
+            dept = calculate_dept(record, subscription_date)
+            logger.info(registar_id, name, email, dept)
+            yield Registar.objects.get_or_create(
+                registar_id=registar_id,
+                subscription_date=subscription_date,
+                name=name,
+                email=email,
+                dept=dept
+            )
+
+        except Exception as e:
+            yield e, False
 
 
-if __name__ == '__main__':
-    input_file_path = input('Input file path: ')
-    output = list(xlsx_to_records(input_file_path, only_active))
-    print(json.dumps(output, indent=2, ensure_ascii=False))
-    print()
-    # reload_registar(input_file_path)
+def reload_registar(xlsx_file_path: str) -> Generator:
+    Registar.objects.all().delete()
+    return load_registar(xlsx_file_path)
