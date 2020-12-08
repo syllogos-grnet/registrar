@@ -59,7 +59,7 @@ def load_registar(xlsx_file_path: str) -> Generator:
                 [record.get('Όνομα', '-'), record.get('Επίθετο', '-')])
             email = record['PR']
             dept = calculate_dept(record, subscription_date)
-            logger.info(registar_id, name, email, dept)
+            logger.info(f'{registar_id}. {name}')
             yield Registar.objects.get_or_create(
                 registar_id=registar_id,
                 subscription_date=subscription_date,
