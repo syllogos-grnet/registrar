@@ -20,5 +20,6 @@ from syndromes import views
 
 urlpatterns = [
     path('syndromes/mydept/', views.request_dept_by_email),
+    path('syndromes/deptbyemail/<str:email>', views.dept_by_email),
     path('admin/', admin.site.urls),
 ]
