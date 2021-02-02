@@ -13,9 +13,12 @@ class Registar(models.Model):
     email = models.EmailField(unique=True)
     dept = models.FloatField(default=0.0)
 
+    def __str__(self):
+        return f'{self.registar_id}. {self.name} <{self.email}>'
+
     @staticmethod
     def get_by_email(email):
-        return Registar.objects.get(email=email).last()
+        return Registar.objects.get(email=email)
 
     @staticmethod
     def get_by_registar_id(registar_id):

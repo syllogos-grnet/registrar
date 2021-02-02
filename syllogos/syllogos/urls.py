@@ -16,6 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from syndromes import views
+
 urlpatterns = [
+    path('syndromes/mydept/', views.request_dept_by_email),
     path('admin/', admin.site.urls),
 ]
