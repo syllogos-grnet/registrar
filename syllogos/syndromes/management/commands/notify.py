@@ -19,9 +19,9 @@ class Command(BaseCommand):
         try:
             notify_by_email(member.registar_id)
         except Exception as e:
-            print('Failed with {member} ', e)
+            print(f'Failed with {member} ', e)
         else:
-            print('Notified {member}')
+            print(f'Notified {member}')
 
     def handle(self, *args, **opts):
         registar_id, email, all_ = self._get_opts(opts)

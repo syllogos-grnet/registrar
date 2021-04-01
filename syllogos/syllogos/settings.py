@@ -139,3 +139,46 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 STATIC_ROOT = os.environ.get('SYLLOGOS_STATIC_ROOT') or '.'
 STATIC_URL = '/static/'
+
+
+# Setup email
+EMAIL_HOST = os.environ.get("SYLLOGOS_EMAIL_HOST") or ""
+EMAIL_PORT = int(os.environ.get("SYLLOGOS_EMAIL_PORT") or 25)
+_default_email_backend = "django.core.mail.backends.dummy.EmailBackend"
+EMAIL_BACKEND = os.environ.get(
+    "SYLLOGOS_EMAIL_BACKEND") or _default_email_backend
+
+# Default from and recepients
+EMAIL_FROM = os.environ.get("SYLLOGOS_EMAIL_FROM") or "ds-syllogos@grnet.gr"
+
+_notify_subject = "[Σύλλογος Ε&Σ ΕΔΥΤΕ] Ενημέρωση συνδρομών"
+NOTIFY_SUBJECT = os.environ.get("SYLLOGOS_NOTIFY_SUBJECT") or _notify_subject
+
+_notify_message = """
+Αγαπητό μέλος του συλλόγου,
+
+έχετε εγγραφεί στο σύλλογο ως «{name}».
+Σύμφωνα με τα αρχεία μας, οφείλετε {dept:.2f} ευρώ.
+
+Μπορείτε να εξοφλήσετε το χρέος σας με κατάθεση στον τραπεζικό λογαριασμό του
+συλλόγου και να ενημερώσετε άμεσα με email το ΔΣ του Συλλόγου
+( {from_email} )
+
+Ο λογαριασμός του Συλλόγου
+---
+Εθνική Τράπεζα της Ελλάδας
+IBAN: GR4401107210000072110088977
+ΣΥΛΛΟΓΟΣ ΕΡΓΑΖΟΜΕΝΩΝ ΚΑΙ ΣΥΝΕΡΓΑΤΩΝ ΕΔΥΤΕ
+
+Σε περίπτωση κατάθεσης με κόστος συναλλαγής (π.χ. από διαφορετική τράπεζα), θα
+πρέπει να επωμισθείτε τις σχετικές τραπεζικές χρεώσεις, διαφορετικά το κόστος
+αυτό θα προστεθεί ως χρέος σας προς το σύλλογο.
+
+Αν πιστεύετε ότι έχει γίνει κάποιο λάθος, επικοινωνήστε με το ΔΣ του Συλλόγου
+ώστε να βρεθεί το πρόβλημα.
+
+Αυτό το email αποστέλεται αυτόματα,
+με ευθύνη του ΔΣ του Συλλόγου Εργαζομένων και Συνεργατών ΕΔΥΤΕ
+"""
+NOTIFY_MESSAGE = os.environ.get("SYLLOGOS_NOTIFY_MESSAGE") or _notify_message
+
