@@ -26,3 +26,11 @@ class Registar(models.Model):
             return Registar.objects.get(registar_id=registar_id)
         except Registar.DoesNotExist:
             return None
+
+
+class NotificationLog(models.Model):
+    registar = models.ForeignKey(
+        Registar, null=True, on_delete=models.SET_NULL)
+    email = models.EmailField(max_length=1024, null=False)
+    timestamp = models.DateTimeField(null=False, default=timezone.now)
+    description = models.CharField(max_length=256, null=True, default="email")
