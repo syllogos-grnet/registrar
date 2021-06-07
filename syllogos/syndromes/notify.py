@@ -32,6 +32,4 @@ def too_many_notifications(email):
         seconds=RESET_EMAILS_LIMIT_AFTER)
     old_notifications = NotificationLog.objects.filter(
         email=email, description='email', timestamp__gte=start_date)
-    if len(old_notifications) >= EMAILS_LIMIT:
-        return True
-    return False
+    return len(old_notifications) >= EMAILS_LIMIT

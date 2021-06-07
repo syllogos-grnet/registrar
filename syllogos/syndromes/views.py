@@ -4,7 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from syndromes.forms import EmailForm
 from syndromes.models import Registar
-from syndromes.notify import notify_by_email
+from syndromes.notify import notify_by_email, too_many_notifications
 
 
 @csrf_exempt
@@ -31,6 +31,8 @@ def dept_by_email(request, email):
             content_type='text/html; charset=utf-8',
             status=404)
     else:
+        if too_many_notifications(email):
+            return render(request, 'toomanyemails.html', {'email': email})
         try:
             notify_by_email(member.registar_id)
         except Exception as e:
