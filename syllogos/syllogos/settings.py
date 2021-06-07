@@ -148,6 +148,13 @@ _default_email_backend = "django.core.mail.backends.dummy.EmailBackend"
 EMAIL_BACKEND = os.environ.get(
     "SYLLOGOS_EMAIL_BACKEND") or _default_email_backend
 
+# Member email limits
+# How many consequtive emails can be sent to the same address
+EMAILS_LIMIT = int(os.environ.get("SYLLOGOS_EMAILS_LIMIT", 3))
+# In seconds
+RESET_EMAILS_LIMIT_AFTER = int(os.environ.get(
+    "SYLLOGOS_RESET_EMAILS_LIMIT_AFTER", 600))
+
 # Default from and recepients
 EMAIL_FROM = os.environ.get("SYLLOGOS_EMAIL_FROM") or "ds-syllogos@grnet.gr"
 
@@ -181,4 +188,3 @@ IBAN: GR4401107210000072110088977
 με ευθύνη του ΔΣ του Συλλόγου Εργαζομένων και Συνεργατών ΕΔΥΤΕ
 """
 NOTIFY_MESSAGE = os.environ.get("SYLLOGOS_NOTIFY_MESSAGE") or _notify_message
-
