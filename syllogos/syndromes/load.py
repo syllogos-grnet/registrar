@@ -31,7 +31,7 @@ def calculate_dept(record, subscription_date):
     installment_date, installment_dept = dict(), dict()
     for i in installments:
         year = i[-4:]
-        month = '01' if i[0] == '1' else '06'
+        month = '01' if i[0] == '1' else '07'
         date_str = f'01/{month}/{year}EET'
         installment_date[i] = datetime.strptime(date_str, '%d/%m/%Y%Z')
         installment_dept[i] = 10.0 if int(year) < 2018 else 5.0
