@@ -142,6 +142,7 @@ STATIC_URL = '/static/'
 
 
 # Setup email
+EMAIL_USE_TLS = os.environ.get("SYLLOGOS_EMAIL_USE_TLS") or True
 EMAIL_HOST = os.environ.get("SYLLOGOS_EMAIL_HOST") or ""
 EMAIL_PORT = int(os.environ.get("SYLLOGOS_EMAIL_PORT") or 25)
 _default_email_backend = "django.core.mail.backends.dummy.EmailBackend"
