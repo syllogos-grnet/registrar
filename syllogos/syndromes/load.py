@@ -28,23 +28,22 @@ def only_active(record: list) -> bool:
 def calculate_dept(record, subscription_date, accept_partial_payment_for_last_installment=False):
     dept = 10.0 - float(record.get('Εγγραφή.1', 0))
     installments = [k for k in record if 'Δόση' in k]
-    installment_date, installment_dept = dict(), dict()
+    calc_min_partial_payment = lambda installment, year: installment - (4.0 if year < 2018 else 3.0) # assume 3-4 EUR max charge
     for i in installments:
         year = i[-4:]
         month = '01' if i[0] == '1' else '07'
         date_str = f'01/{month}/{year}EET'
-        installment_date[i] = datetime.strptime(date_str, '%d/%m/%Y%Z')
-        installment_dept[i] = 10.0 if int(year) < 2018 else 5.0
-    calc_min_partial_payment = lambda installment, year: installment - (4.0 if year < 2018 else 3.0) # assume 3-4 EUR max charge
-    for i in installments:
-        tzinfo = installment_date[i].tzinfo
+        installment_date = datetime.strptime(date_str, '%d/%m/%Y%Z')
+        installment_dept = 10.0 if int(year) < 2018 else 5.0
+        tzinfo = installment_date.tzinfo
         now = datetime.now(tzinfo)
-        if utc.localize(installment_date[i]) > subscription_date and installment_date[i] < now:
-            payed = float(record.get(i, 0) or 0)
-            if calc_min_partial_payment(installment_dept[i], installment_date[i].year) <= payed < installment_dept[i] and accept_partial_payment_for_last_installment and (
-                installment_date[i] == datetime(now.year, 1 if now.month < 7 else 7, 1)):
-                payed = installment_dept[i]
-            dept += installment_dept[i] - payed
+        if not (utc.localize(installment_date) > subscription_date and installment_date < now):
+            continue
+        payed = float(record.get(i, 0) or 0)
+        if calc_min_partial_payment(installment_dept, installment_date.year) <= payed < installment_dept and accept_partial_payment_for_last_installment and(
+            installment_date == datetime(now.year, 1 if now.month < 7 else 7, 1)):
+            payed = installment_dept
+        dept += installment_dept - payed
     return dept
 
 
