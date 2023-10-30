@@ -26,7 +26,7 @@ def export_can_vote(xlsx_file_path: str) -> Generator:
             first_name = record.get('Όνομα', '-')
             last_name = record.get('Επίθετο', '-')
             email = (record['PR'] or "").strip()
-            dept = calculate_dept(record, subscription_date)
+            dept = calculate_dept(record, subscription_date, accept_partial_payment_for_last_installment=True)
             if dept > 0.0:
                 logger.info(f'{registar_id}. {last_name} not allowed to vote')
                 continue
