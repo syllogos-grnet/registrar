@@ -3,7 +3,7 @@ import os
 import csv
 import argparse
 from collections import Generator
-from logging import getLogger
+import logging
 
 import django
 # sys.path.append("/path/to/store") #here store is root folder(means parent).
@@ -14,7 +14,12 @@ from syndromes.load import (
     xlsx_to_records, only_active, get_date, calculate_dept
 )
 
-logger = getLogger(__name__)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+stdout_handler = logging.StreamHandler(sys.stderr)
+formatter = logging.Formatter('%(message)s')
+stdout_handler.setFormatter(formatter)
+logger.addHandler(stdout_handler)
 
 
 def export_can_vote(xlsx_file_path: str) -> Generator:
